@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace ="com.kh.jaManChw.admin.usermanage.dao.face.UserManageDao">
+
+	<select id="selectCntAll"  resultType="int"  >
+		SELECT count(*) FROM USERS
+	</select>
+	
+	<select id="selectUserMgPage" resultType="com.kh.jaManChw.dto.Users" parameterType="com.kh.jaManChw.util.Paging">
+		SELECT * FROM (
+		SELECT rownum rnum, B.* FROM (
+		SELECT
+ 			*
+		FROM users
+		ORDER BY userno DESC
+		) B
+		)users
+		WHERE rnum BETWEEN #{startno} AND #{endno}
+	</select>
+	
+	<!--  $ 따옴표 없는 거          # 따옴표 있는 거  '' 자동으로 삽입-->
+	<select id="selectUserMgFiltering" resultType="com.kh.jaManChw.dto.Users"  parameterType="map">
+		SELECT * FROM (
+		SELECT rownum rnum, B.* FROM (
+		select * FROM users
+		WHERE 1 = 1 
+		<if test="content != null and !''.equals(content)">
+		and upper(${filter}) LIKE '%' || upper(#{content}) || '%'
+		</if>
+		<if test="status != null and !''.equals(status)">
+		and status =  #{status}
+		</if>
+		ORDER BY userno DESC
+		) B
+		)users
+		WHERE rnum BETWEEN #{paging.startno} AND #{paging.endno}
+	</select>
+	
+
+	<select id="getUserdata" resultType="hashmap"  parameterType="int">
+	select * FROM users U where U.userno = ${userno}
+	</select>
+	<select id="getUserdataProfile" resultType="hashmap"  parameterType="int">
+	select U.*, P.profile_stored_name FROM profile_file P, users U where U.userno = #{userno} and U.userno = P.userno
+	</select>
+	<select id="selectUserProfile"  resultType="int"  parameterType="int">
+	select  count(*) FROM profile_file where userno = ${userno} 
+	</select>
+	<update id="deleteUserMgWithdraw" parameterType="int">
+	UPDATE users SET  status = 'leave'
+	WHERE userno = ${userno}
+	</update>
+	
+	<select id="selectFilterCntAll" resultType="int" parameterType="map">
+		select count(*) FROM users WHERE 1=1
+		<if test="content != null and !''.equals(content)"> 
+		and upper(${filter}) LIKE '%' || upper(#{content}) || '%'
+		</if>
+		<if test="status != null and !''.equals(status)">
+		and status = #{status}
+		</if>
+	</select>
+	
+	<update id="updateUserBlackUpdate" parameterType="int">
+	UPDATE users SET status = 'blacklist'
+	WHERE userno = ${userno}
+	</update>
+	
+	<update id="updateUserBlackStop" parameterType="int">
+	UPDATE users SET status = 'block'
+	WHERE userno = ${userno}
+	</update>
+	
+	
+	<update id="updateUserMgUpdate" parameterType="map">
+UPDATE users SET user_id = #{userId}, user_name = #{userName}, user_nick=#{userNick}
+, email = #{email}, phone = #{phone}, addr1=${addr1}, addr2=#{addr2}, addr3=#{addr3}, gender=#{gender}
+, status=#{status} 
+	WHERE userno = ${userno}
+	</update>
+	
+	
+</mapper>

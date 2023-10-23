@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace ="com.kh.jaManChw.admin.reportmanage.dao.face.ReportManageDao">
+
+	<select id="selectCntAll"  resultType="int"  parameterType="String">
+		SELECT count(*) FROM report where report_type = #{type}
+	</select>
+	
+	<select id="selectReportPost" resultType="hashMap" parameterType="com.kh.jaManChw.util.Paging">
+		SELECT * FROM (
+		    SELECT rownum rnum, B.* FROM (
+		            SELECT R.*, U.user_id, U.user_name, Q.user_id AS R_USER_ID, Q.user_name AS R_USER_NAME FROM report R, users U, users Q
+		            WHERE R.userno = U.userno and R.report_type = 'board'  and R.r_userno = Q.userno
+		            ORDER BY R.reportno DESC
+		        )B
+		    )
+		WHERE rnum BETWEEN #{startno} AND #{endno}
+	</select>
+	
+	<select id="selectReportPostView" resultType="hashMap" parameterType="String">
+      SELECT 
+      	R.REPORTNO
+		, R.USERNO
+		, R.R_USERNO
+		, R.BOARDNO
+		, R.MEETINGNO
+		, R.TITLE
+		, R.CONTENT
+		, R.STATUS
+		, R.REPORT_OPTION
+		, CAST(R.WRITE_DATE AS DATE) write_date
+		, R.REPORT_TYPE
+      	, U.user_id
+      	, U.user_name
+      	, Q.user_id AS R_USER_ID
+      	, Q.user_name AS R_USER_NAME 
+      FROM 
+      	report R
+      	, users U
+      	, users Q
+      WHERE 1 = 1 
+      	AND R.reportno = #{reportno} 
+      	AND R.report_type = 'board' 
+      	AND R.userno = U.userno 
+      	AND R.r_userno = Q.userno
+	</select>
+
+	<select id="selectUserPost" resultType="hashMap" parameterType="com.kh.jaManChw.util.Paging">
+		SELECT * FROM (
+		    SELECT rownum rnum, B.* FROM (
+		            SELECT R.*, U.user_id, U.user_name, Q.user_id AS R_USER_ID, Q.user_name AS R_USER_NAME FROM report R, users U, users Q
+		            WHERE R.userno = U.userno and R.report_type = 'user'  and R.r_userno = Q.userno
+		            ORDER BY R.reportno DESC
+		        )B
+		    )
+		WHERE rnum BETWEEN #{startno} AND #{endno}
+	</select>
+	<select id="selectReportUserView" resultType="hashMap" parameterType="String">
+      SELECT 
+      	R.REPORTNO
+		, R.USERNO
+		, R.R_USERNO
+		, R.BOARDNO
+		, R.MEETINGNO
+		, R.TITLE
+		, R.CONTENT
+		, R.STATUS
+		, R.REPORT_OPTION
+		, CAST(R.WRITE_DATE AS DATE) write_date
+		, R.REPORT_TYPE
+      	, U.user_id
+      	, U.user_name
+      	, Q.user_id AS R_USER_ID
+      	, Q.user_name AS R_USER_NAME 
+      FROM 
+      	report R
+      	, users U
+      	, users Q
+      WHERE 1 = 1
+      	AND R.reportno = #{reportno} 
+      	AND R.report_type = 'user' 
+      	AND R.userno = U.userno 
+      	AND R.r_userno = Q.userno
+	</select>
+	
+		<select id="selectReportPostFiltering" resultType="hashmap"  parameterType="map">
+           		SELECT * FROM (
+		    SELECT rownum rnum, B.* FROM (
+		            SELECT R.*, U.user_id, U.user_name, Q.user_id AS R_USER_ID, Q.user_name AS R_USER_NAME FROM report R, users U, users Q
+		            WHERE R.userno = U.userno and R.report_type = #{type}  and R.r_userno = Q.userno 
+				<if test="content != null and !''.equals(content)">
+				and upper(${filter}) LIKE '%' || upper(#{content}) || '%'
+				</if>
+				<if test="status != null and !''.equals(status)">
+				and R.status =  #{status}
+				</if>
+		            ORDER BY R.reportno DESC
+		        )B
+		    )
+		WHERE rnum BETWEEN #{paging.startno} AND #{paging.endno}
+	</select>
+	
+	<update id="updateReportPostState" parameterType="map">
+	<if test="type == 'approval'">
+	    {call
+	        declare
+	        begin
+				UPDATE users SET warn_count = warn_count+1
+				WHERE userno = ${ruserno};
+				UPDATE report SET status = 'done'
+				WHERE reportno = ${reportno};
+			end
+		}
+	</if>
+		<if test="type == 'cancel'">
+		UPDATE report SET status = 'done'
+		WHERE reportno = ${reportno}
+	</if>
+	</update>
+		
+	<select id="selectReportMeeting" resultType="hashMap" parameterType="com.kh.jaManChw.util.Paging">
+		SELECT * FROM (
+		    SELECT rownum rnum, B.* FROM (
+		            SELECT R.*, U.user_id, U.user_name, Q.user_id AS R_USER_ID, Q.user_name AS R_USER_NAME FROM report R, users U, users Q
+		            WHERE R.userno = U.userno and R.report_type = 'meeting'  and R.r_userno = Q.userno
+		            ORDER BY R.reportno DESC
+		        )B
+		    )
+		WHERE rnum BETWEEN #{startno} AND #{endno}
+	</select>
+	
+	<select id="selectReportMeetingView" resultType="hashMap" parameterType="String">
+      SELECT 
+      	R.REPORTNO
+		, R.USERNO
+		, R.R_USERNO
+		, R.BOARDNO
+		, R.MEETINGNO
+		, R.TITLE
+		, R.CONTENT
+		, R.STATUS
+		, R.REPORT_OPTION
+		, CAST(R.WRITE_DATE AS DATE) write_date
+		, R.REPORT_TYPE
+      	, U.user_id
+      	, U.user_name
+      	, Q.user_id AS R_USER_ID
+      	, Q.user_name AS R_USER_NAME
+      FROM 
+      	report R
+      	, users U
+      	, users Q
+      WHERE 1 = 1
+      	AND R.reportno = #{reportno} 
+      	AND R.report_type = 'meeting' 
+      	AND R.userno = U.userno 
+      	AND R.r_userno = Q.userno
+	</select>
+	
+	<update id="deleteReportPostBoard" parameterType="map">
+		UPDATE board
+		SET 
+		status = 'unactive'
+		WHERE
+		boardno = ${boardno}
+	</update>
+	
+	<update id="updateReportMeeting"  parameterType="map">
+		<if test="type == 'approval'">
+	    {call
+	        declare
+	        begin
+				UPDATE users SET warn_count = warn_count+1
+				WHERE userno = ${ruserno};
+				UPDATE report SET status = 'done'
+				WHERE reportno = ${reportno};
+			end
+		}
+	</if>
+		<if test="type == 'cancel'">
+		UPDATE report SET status = 'done'
+		WHERE reportno = ${reportno}
+	</if>
+	</update>
+	
+	<update id="deleteReportMeeting" parameterType="map">
+		UPDATE meeting
+		SET 
+		status = 'unactive'
+		WHERE
+		meetingno = ${meetingno}
+	</update>
+	
+	<select id="selectFilterCntAll"  resultType="int" parameterType="map">
+	
+      	SELECT count(*) FROM (
+		    SELECT rownum rnum, B.* FROM (
+		    	SELECT R.*, U.user_id, U.user_name, Q.user_id AS R_USER_ID, Q.user_name AS R_USER_NAME FROM report R, users U, users Q
+		        WHERE R.userno = U.userno and R.report_type = #{type} and R.r_userno = Q.userno 
+				<if test="content != null and !''.equals(content)">
+				and upper(${filter}) LIKE '%' || upper(#{content}) || '%'
+				</if>
+				<if test="status != null and !''.equals(status)">
+				and R.status =  #{status}
+				</if>
+		        ORDER BY R.reportno DESC
+			)B
+		)
+	
+	</select>
+	
+</mapper>

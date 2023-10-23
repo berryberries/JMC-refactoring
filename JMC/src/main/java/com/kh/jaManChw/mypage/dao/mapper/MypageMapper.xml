@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.kh.jaManChw.mypage.dao.face.MypageDao">
+  
+  	  <update id="updateUserInfo"  parameterType="com.kh.jaManChw.dto.Users">
+		UPDATE USERS SET USER_NICK=#{userNick},USER_PW=#{userPw},EMAIL=#{email},PHONE=#{phone},ADDR1=#{addr1},ADDR2=#{addr2},ADDR3=#{addr3}  		
+		WHERE USERNO=#{userno}
+	  </update>
+	  
+	  <select id="selectUserInfo" resultType="com.kh.jaManChw.dto.Users" parameterType="int">
+	  	SELECT * 
+	  	FROM USERS
+	  	WHERE USERNO=#{userno}
+	  </select>
+	  
+	  <update id="updateUserStatus"  parameterType="int">
+		UPDATE USERS SET STATUS='leave'  		
+		WHERE USERNO=#{userno}
+	  </update>
+	  
+	  <insert id="insertFile"  parameterType="com.kh.jaManChw.dto.ProfileFile">
+	  	INSERT INTO PROFILE_FILE(PROFILENO, USERNO, PROFILE_ORIGIN_NAME, PROFILE_STORED_NAME, PROFILESIZE)
+	  	VALUES (PROFILE_FILE_SEQ.NEXTVAL,#{userno},#{profileOriginName},#{profileStoredName},#{profilesize})
+	  </insert>
+	  
+	  
+	  <select id="selectfileInfo" parameterType="int" resultType="com.kh.jaManChw.dto.ProfileFile">
+	  	SELECT PROFILE_STORED_NAME
+	  	FROM PROFILE_FILE
+	  	WHERE USERNO=#{userno}
+	  </select>
+	  
+	  <delete id="deleteProfileName" parameterType="com.kh.jaManChw.dto.ProfileFile">
+	  	DELETE FROM PROFILE_FILE
+	  	WHERE USERNO=#{userno}
+	  </delete>
+	  
+	  <select id="selectCntProfile" resultType="int" parameterType="com.kh.jaManChw.dto.ProfileFile">
+	  	SELECT COUNT(*)
+	  	FROM PROFILE_FILE
+	  	WHERE USERNO=#{userno}
+	  </select>
+	  
+	   <select id="selectFileName" resultType="com.kh.jaManChw.dto.ProfileFile">
+	  	SELECT PROFILE_STORED_NAME
+	  	FROM PROFILE_FILE
+	  	WHERE USERNO=#{userno}
+	  </select>
+	  
+	 <select id="selectSearchList" resultType="com.kh.jaManChw.dto.Users">
+		  SELECT USERNO, USER_ID, USER_NICK, USER_NAME
+		  FROM USERS
+		  <choose>
+		    <when test="type == 'all'">
+		      WHERE (UPPER(USER_ID) LIKE '%' || UPPER(#{keyword})|| '%' OR USER_NICK LIKE '%' || #{keyword} || '%')
+		    </when>
+		    <otherwise>
+		      WHERE ${type} LIKE '%' || #{keyword} || '%'
+		    </otherwise>
+		  </choose>
+	</select>
+	
+	<select id="selectFriendAll" resultType="map">
+		SELECT FL.*, U.USER_ID, USER_NICK, USER_NAME
+		FROM FRIEND_LIST FL, USERS U
+		WHERE  1 = 1
+		    AND fl.friend_userno = u.userno
+		    AND fl.userno = #{userno}
+		ORDER BY FRIEND_USERNO
+	</select>
+	
+	<select id="selectCntFriend" resultType="int" parameterType="com.kh.jaManChw.dto.FriendList">
+		SELECT COUNT(*)
+		FROM FRIEND_LIST FL, USERS U
+		WHERE (U.USERNO=#{userno}
+		    AND FL.FRIEND_USERNO=#{friendUserno})
+	</select>
+	
+	<insert id="insertFriend" parameterType="com.kh.jaManChw.dto.FriendList" >
+		INSERT INTO FRIEND_LIST (FRIEND_LISTNO,USERNO,FRIEND_USERNO,FRIEND_BLOCK)
+		VALUES (FRIEND_LIST_SEQ.NEXTVAL,#{userno},#{friendUserno},DEFAULT)
+	</insert>
+	
+	<select id="selectMyboard" parameterType="com.kh.jaManChw.dto.Users" resultType="map">
+		SELECT B.BOARDNO,B.BOARD_OPTIONNO,B.USERNO,B.CONTENT,B.STATUS,CAST(B.WRITE_DATE as DATE) WRITE_DATE,B.UPDATE_DATE, USER_ID,STORED_NAME
+		FROM BOARD B, BOARD_FILE BF, USERS U
+		WHERE 1=1
+		    AND BF.BOARDNO = B.BOARDNO
+		    AND B.USERNO =U.USERNO
+		    AND U.USERNO=#{userno}
+		ORDER BY B.BOARDNO
+	</select>
+	
+	<delete id="deleteFriend" parameterType="com.kh.jaManChw.dto.FriendList">
+		DELETE FROM FRIEND_LIST
+	  	WHERE FRIEND_USERNO=#{friendUserno}	
+	</delete>
+	
+	
+	<select	id="selectMyMeeting" parameterType="Users" resultType="map">
+		select  * from (
+		select rownum rnum, m.*,c.cnt from meeting m join (select count(*) cnt, a.meetingno from applicant a  where agree = 'yes' group by a.meetingno) c
+		on m.meetingno = c.meetingno) t
+		where t.userno = #{userno} and rnum BETWEEN #{paging.startno} AND #{paging.endno}
+		order by meetingno desc
+		
+	</select>
+
+  </mapper>

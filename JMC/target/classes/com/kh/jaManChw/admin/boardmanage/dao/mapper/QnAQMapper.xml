@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.jaManChw.admin.boardmanage.dao.face.QnAQDao">
+
+	<select id="selectCntQnAQ" resultType="int">
+		SELECT count(*) FROM QnA_Q
+	</select>
+	
+	<select id="selectQnAQAll" resultType="map" parameterType="Paging">
+		SELECT * FROM(
+		    SELECT rownum rnum, B.* FROM(
+      			SELECT 
+      				q.questionno
+      				, u.user_id userId
+      				, q.q_title qTitle
+      				, q.q_status qStatus
+      				, q.write_date writeDate
+      				, a.answerno 
+      			FROM 
+      				QnA_Q q
+      				, users u
+      				, QnA_A a
+		        WHERE 1 = 1
+			        AND q.userno = u.userno
+	                AND a.a_status(+) = 'undelete'
+	                AND a.questionno(+) = q.questionno
+		        ORDER BY questionno DESC
+		    )B
+		)
+		WHERE 1= 1
+		    AND rnum BETWEEN ${startno} AND ${endno}
+	</select>
+	
+	<select id="selectCntQnAQFilterAll" resultType="int" parameterType="map" >
+
+        SELECT 
+        	count(*) 
+        FROM 
+        	QnA_Q q
+        	, users u
+        	, QnA_A a
+        WHERE 1 = 1
+        	AND q.userno = u.userno
+        	AND q.questionno = a.questionno(+)
+        	<if test="content != null and !''.equals(content)">
+			AND upper(${filter}) Like '%' || upper(#{content}) || '%'
+			</if>
+        ORDER BY q.questionno DESC
+	</select>
+
+	<select id="selectQnAQByFilter" resultType="map" parameterType="map">
+		SELECT * FROM(
+		    SELECT rownum rnum, B.* FROM(
+      			SELECT 
+      				q.questionno
+      				, u.user_id userId
+      				, q.q_title qTitle
+      				, q.q_status qStatus
+      				, q.write_date writeDate
+      				, a.answerno 
+      			FROM 
+      				QnA_Q q
+      				, users u
+      				, QnA_A a
+		        WHERE 1 = 1
+			        AND q.userno = u.userno
+	                AND a.questionno(+) = q.questionno
+	               	<if test="content != null and !''.equals(content)">
+	                AND upper(${filter}) Like '%' || upper(#{content}) || '%'
+                	</if>
+                	<if test="status != null and !''.equals(status)">
+					AND upper(q_status) =upper(#{status})
+					</if>
+		        ORDER BY q.questionno DESC
+		    )B
+		)
+		WHERE 1= 1
+		    AND rnum BETWEEN ${paging.startno} AND ${paging.endno}
+	</select>
+	
+	<select id="selectQnAQDetail" resultType="map" parameterType="int">
+		SELECT 
+			q.questionno
+			, u.user_id userId
+			, q.q_title qTitle
+			, q.q_content qContent
+			, q.q_status qStatus
+			, q.write_date writeDate 
+		FROM 
+			QnA_Q q
+			, users u	
+        WHERE 1 = 1
+        	AND q.userno = u.userno
+        	AND questionno = #{questionno}
+	</select>
+	<update id="updateQnAQStatus" parameterType="QnAA">
+		UPDATE 
+			QnA_Q 
+		SET q_Status = 'unprocessed' 
+		WHERE questionno = #{questionno}
+	</update>
+</mapper>

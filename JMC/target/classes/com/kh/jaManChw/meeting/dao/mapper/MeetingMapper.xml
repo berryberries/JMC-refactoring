@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.kh.jaManChw.meeting.dao.face.MeetingDao">
+
+
+<select id="selectMeetingno" resultType = "int">
+	
+	select meeting_seq.nextval from dual
+
+</select>
+
+
+<insert id="insertMeeting" parameterType="com.kh.jaManChw.dto.Meeting">
+
+	INSERT INTO MEETING VALUES( #{meetingno} , #{userno} , #{mname} , #{loc}, #{loc1}, #{loc2}, #{loc3} , #{meetingDate} 
+	, #{fee}, #{introduce}, #{headCount},  'active', default , sysdate)
+
+</insert>
+
+
+<insert id="insertPreference" parameterType="com.kh.jaManChw.dto.Preference">
+	INSERT INTO PREFERENCE VALUES( preference_seq.nextval , #{meetingno}, #{gender}, #{minage}, #{maxage} , #{smoke} , #{friend} )
+</insert>
+
+
+<insert id="insertMeetingUser" parameterType="com.kh.jaManChw.dto.Applicant">
+	INSERT INTO APPLICANT VALUES(applicant_seq.nextval, #{meetingno}, #{userno} , default, 'yes' , 1 , 'yes' )
+</insert>
+
+
+<select id="selectUserNo" resultType="int" parameterType="int">
+	
+	SELECT userno from users 
+	where userno = #{userno} 
+	
+</select> 
+
+<select id="selectMeetinglistAll" resultType="com.kh.jaManChw.dto.Meeting">
+	
+select * from meeting where status = 'active' and meeting_date &gt; sysdate
+	
+</select>
+
+<update id="updateStatus" parameterType="com.kh.jaManChw.dto.Meeting">
+
+update (select * from meeting  m join(select count(*)cnt,
+meetingno from applicant where agree='yes' group by meetingno)a 
+on m.meetingno = a.meetingno) set status = 'unactive' where head_count &lt;= cnt
+
+
+</update>
+
+
+<select id="selectMeeting" resultType="com.kh.jaManChw.dto.Meeting" parameterType="com.kh.jaManChw.dto.Meeting">
+
+SELECT * FROM MEETING WHERE meetingno = #{meetingno} 
+
+</select>
+
+<update id="updatehit" parameterType="com.kh.jaManChw.dto.Meeting">
+	
+UPDATE MEETING SET HIT = HIT + 1 WHERE meetingno = #{meetingno} 
+
+</update>
+
+<insert id="insertReportMeeting" parameterType="com.kh.jaManChw.dto.Report">
+
+INSERT INTO report values(report_seq.nextval , #{userno} , #{ruserno} , null, #{meetingno}, #{title}, #{content}, 'done' , #{reportOption}, sysdate,  'meeting' )
+
+</insert>
+
+
+<select id="selectUserNickAgree" resultType="com.kh.jaManChw.dto.Users" parameterType="com.kh.jaManChw.dto.Meeting">
+
+select * from users inner join applicant 
+on applicant.userno = users.userno 
+where applicant.meetingno = #{meetingno} and leader = 'no' and applicant.agree = 'yes'
+	
+</select>
+
+<select id="selectUserNickNoCheck" resultType="com.kh.jaManChw.dto.Users" parameterType="com.kh.jaManChw.dto.Meeting">
+
+select *
+from users inner join applicant 
+on applicant.userno = users.userno 
+where applicant.meetingno = #{meetingno} and leader = 'no' and applicant.agree = 'nocheck'
+
+	
+</select>
+
+
+<select id="selectMeetingApplicantLeader" resultType = "com.kh.jaManChw.dto.Users" parameterType="com.kh.jaManChw.dto.Meeting">
+	
+	select *
+    from users inner join applicant 
+    on applicant.userno = users.userno 
+    where applicant.meetingno = #{meetingno} and leader = 'yes'
+
+</select>
+
+
+<select id = "selectMeetingApplicantUser" resultType="com.kh.jaManChw.dto.Users" parameterType="com.kh.jaManChw.dto.Users">
+	
+	select * from users 
+	where userno = #{userno}
+	
+
+</select>
+
+<insert id = "insertJoinMeeting" parameterType="com.kh.jaManChw.dto.Applicant">
+	
+	insert into applicant values(applicant_seq.nextval, #{meetingno}, #{userno}, #{applicantContent}, 'nocheck' , 1, 'no' )
+	
+</insert>
+
+<select id="selectMeetingListByDate" parameterType="String" resultType="com.kh.jaManChw.dto.Meeting">
+
+	SELECT * FROM meeting where status = 'active' and meeting_date &gt; sysdate and trunc(meeting_date) = to_date(#{result}, 'yyyy/mm/dd')
+	
+</select>
+
+<select id="selectMeetingListCount" parameterType="com.kh.jaManChw.dto.Meeting" resultType="int">
+
+	select count(*) from meeting where meeting_date &gt; sysdate
+	
+</select>
+
+<select id="selectMeetingListCountnow" parameterType="com.kh.jaManChw.dto.Meeting" resultType="int">
+
+	select count(*) from meeting where status = 'active' and meeting_date &gt; sysdate
+
+</select>
+
+<select id="selectMeetingListByMname" parameterType="String" resultType="com.kh.jaManChw.dto.Meeting">
+
+	SELECT * FROM meeting where mname like concat('%'|| #{search},'%') and status = 'active' and meeting_date &gt; sysdate
+	
+</select>
+
+<select id="selectMeetingListByFilter" parameterType="Map" resultType="com.kh.jaManChw.dto.Meeting">
+
+	select * from meeting where fee &lt; #{fee} and head_count &lt; #{headCount} and status = 'active' and meeting_date &gt; sysdate
+	
+</select>
+
+<select id="selectMeetingListByMap" parameterType="String" resultType="com.kh.jaManChw.dto.Meeting">
+
+	select * from meeting where loc1 in(#{mapData} , #{mapData1}) and status = 'active' and meeting_date &gt; sysdate
+
+</select>
+
+<select id="selectDetailPreference" parameterType="com.kh.jaManChw.dto.Preference" resultType="com.kh.jaManChw.dto.Preference">
+
+	select * from preference where meetingno = #{meetingno}
+
+</select>
+
+
+
+<select id="selectMyMeetingno" parameterType="com.kh.jaManChw.dto.Meeting" resultType="com.kh.jaManChw.dto.Meeting">
+
+	select meetingno from meeting where userno = #{userno}
+	
+</select>
+
+
+
+
+
+
+<update id="updateApplicantAgree" parameterType="com.kh.jaManChw.dto.Applicant">
+
+	update applicant set agree = #{agree}
+	where userno = ${userno} and meetingno = #{meetingno}
+	
+</update>
+
+<select id="selectCnt" parameterType="java.util.List" resultType="int">
+
+    select count(*) cnt from users u join applicant a
+    on u.userno = a.userno
+    join meeting m 
+    on a.meetingno = m.meetingno
+    where a.meetingno in
+   	<foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+	#{item.meetingno}
+	</foreach>
+     and agree = 'nocheck'
+
+</select>
+
+<select id="selectApplicantPaging" resultType="map">
+
+     
+     SELECT *
+FROM (
+    SELECT rownum rnum, t.*
+    FROM (
+        SELECT u.user_nick, u.userno, a.applicant_content, m.mname, m.meetingno, p.profile_stored_name, a.applicantno
+        FROM users u
+        JOIN applicant a ON u.userno = a.userno
+        JOIN meeting m ON a.meetingno = m.meetingno
+        LEFT OUTER JOIN profile_file p ON u.userno = p.userno
+        WHERE a.meetingno IN 
+      <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+	#{item.meetingno}
+	</foreach>
+        AND agree = 'nocheck'
+        ORDER BY a.applicantno DESC
+    ) t
+)
+WHERE rnum BETWEEN #{paging.startno } AND #{paging.endno }
+</select>
+
+<select id="selectNotFull" parameterType="com.kh.jaManChw.dto.Applicant" resultType="int">
+
+	select count(*) from meeting  m 
+	join (select count(*) cnt, a.meetingno from applicant a 
+	where agree = 'yes'
+	group by a.meetingno) c 
+	on m.meetingno = c.meetingno
+	where m.head_count <![CDATA[<=]]> c.cnt and m.meetingno = #{meetingno}
+
+</select>
+
+
+
+<select id="selectApplicantCount" parameterType="com.kh.jaManChw.dto.Applicant" resultType="int">
+
+	select count(*) from applicant where meetingno = #{meetingno} and leader = 'no' and not agree = 'no'
+
+</select>
+
+<select id="selectApplicantCheckCount" parameterType="com.kh.jaManChw.dto.Applicant" resultType="int">
+
+	select count(*) from applicant where meetingno = #{meetingno} and leader = 'no' and agree = 'yes' 
+
+</select>
+
+<select id="selectApplicantNoCheckCount" parameterType="com.kh.jaManChw.dto.Applicant" resultType="int">
+
+	select count(*) from applicant where meetingno = #{meetingno} and leader = 'no' and agree = 'nocheck' 
+
+</select>
+
+<select id="selectMeetingAppUser" parameterType="com.kh.jaManChw.dto.Applicant" resultType="int">
+
+	select count(*) from applicant 
+	where meetingno = #{meetingno} and userno = #{userno}
+
+</select>
+
+
+<select id="selectCntAll" parameterType="com.kh.jaManChw.dto.Meeting" resultType="int">
+select count(*) from applicant where userno = #{userno}
+
+</select>
+<select id="selectMyApplicant" resultType="map">
+	
+SELECT *
+FROM (
+    SELECT rownum rnum, t.*
+    FROM (
+        SELECT a.*, m.mname
+        FROM (
+            SELECT *
+            FROM applicant
+            WHERE userno = #{applicant.userno}
+            ORDER BY applicantno DESC
+        ) a
+        JOIN meeting m ON a.meetingno = m.meetingno
+        WHERE a.leader = 'no'
+    ) t
+)
+WHERE rnum BETWEEN #{paging.startno} AND #{paging.endno}
+
+</select>
+<select id="selectMyMeetingList"  resultType="map">
+select * from(
+select rownum rnum,t.* from ( select  m.*,c.cnt from meeting m join 
+(select count(*) cnt, a.meetingno from applicant a where agree = 'yes' group by a.meetingno)
+c on m.meetingno = c.meetingno) t where t.userno = #{meeting.userno}) 
+
+where  rnum BETWEEN #{paging.startno}  AND #{paging.endno} order by meetingno desc
+</select>
+
+<select id="selectMyMeetingCntAll" parameterType="com.kh.jaManChw.dto.Meeting" resultType="int" >
+	select count(*) from meeting where userno = #{userno}
+
+</select>
+
+<select id="selectLeaderProfile" parameterType="com.kh.jaManChw.dto.Applicant" resultType="map">
+	select * from users u join    (
+select * from applicant where meetingno =#{meetingno} and leader = 'yes') c on u.userno = c.userno
+left outer join profile_file p on u.userno = p.userno
+
+</select>
+</mapper>
