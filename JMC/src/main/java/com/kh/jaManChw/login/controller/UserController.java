@@ -40,7 +40,7 @@ public class UserController {
 		//JSP에 정보를 입력하기에는 노출의 위험이 있기에 controller에서 선처리 후 보낸다
 		Map<String, String> naverMap = naverService.getNaverApiInfo();
 		
-		session.setAttribute("apiURL", naverMap.get("apiURL"));
+		session.setAttribute("apiURL", naverMap.get("apiURL")); 
 	}
 
 	// 로그인 - true or false
