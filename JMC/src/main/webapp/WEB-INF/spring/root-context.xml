@@ -7,13 +7,19 @@
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
-<!-- 		<property name="url" value="jdbc:oracle:thin:@kihoonsdb_medium?TNS_ADMIN=D:/wallet/Wallet_KiHoonsDB"/> -->
-		<property name="url" value="jdbc:oracle:thin:@kihoonsdb_medium?TNS_ADMIN=C:/wallet/Wallet_KiHoonsDB"/>
-<!-- 		<property name="url" value="jdbc:oracle:thin:@kihoonsdb_medium?TNS_ADMIN=/Users/wallet/Wallet_KiHoonsDB"/> -->
-		<property name="username" value="admin"/>
-		<property name="password" value="thdrlgns123!Q"/>
-	</bean>
+	
+	<!-- 드라이버 클래스 이름이 변경됨 --><!-- oracle.jdbc.driver.OracleDriver -->
+	   <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+	   <!-- 연결문자열에 log4jdbc가 추가됨 -->
+	   <property name="url" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:orcl" />
+	   <property name="username" value="scott" />
+	   <property name="password" value="tiger" />
+   </bean>
+	
+<!-- 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/> -->
+<!-- 		<property name="url" value="jdbc:oracle:thin:@kihoonsdb_medium?TNS_ADMIN=C:/wallet/Wallet_KiHoonsDB"/> -->
+<!-- 		<property name="username" value="admin"/> -->
+<!-- 		<property name="password" value="thdrlgns123!Q"/> -->
 	
 	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	
