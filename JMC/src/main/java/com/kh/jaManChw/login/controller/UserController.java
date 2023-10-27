@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.jaManChw.dto.ProfileFile;
 import com.kh.jaManChw.dto.Users;
+import com.kh.jaManChw.login.jwt.JwtTokenProvider;
 import com.kh.jaManChw.login.service.face.NaverService;
 import com.kh.jaManChw.login.service.face.UsersService;
 import com.kh.jaManChw.mypage.service.face.MypageService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/login")
@@ -30,6 +33,7 @@ public class UserController {
 	@Autowired UsersService usersService;
 	@Autowired MypageService mypageService;
 	@Autowired NaverService naverService;
+	@Autowired JwtTokenProvider jwtTokenProvider;
 
 	@RequestMapping("/main")
 	public void mainPage() {}

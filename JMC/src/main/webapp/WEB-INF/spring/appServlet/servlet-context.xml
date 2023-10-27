@@ -75,6 +75,12 @@
 			<mapping path="/**/meeting/**"/>
 			<beans:bean class="com.kh.jaManChw.util.interceptor.MeetingInterceptor"/>
 		</interceptor>	
+			
+		<interceptor>
+			<mapping path="/**"/>
+			<beans:bean class="com.kh.jaManChw.util.interceptor.JwtInterceptor"/>
+		</interceptor>
+		
 	</interceptors>
 
 <!--=================================================================================================================-->
