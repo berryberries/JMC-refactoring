@@ -3,6 +3,7 @@ package com.kh.jaManChw.login.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -16,6 +17,7 @@ public class UsersServiceImpl implements UsersService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired UsersDao usersDao;
+	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	//유저 정보 가져오기
 	@Override
@@ -45,8 +47,14 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public void join(Users users) {
+		
+		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
+		
+		logger.info("암호화 비밀번호 : " + endcodedPassword);
+		
 		// insert문 호출
 		logger.info("join:{}",users);
+		users.setUserPw(endcodedPassword);
 		usersDao.insertUsers(users);
 	}
 	
@@ -70,6 +78,8 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public int modifyPw(Users users) {
 		
+		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
+		users.setUserPw(endcodedPassword);
 		return usersDao.updateByUserPw(users);		
 	}
 

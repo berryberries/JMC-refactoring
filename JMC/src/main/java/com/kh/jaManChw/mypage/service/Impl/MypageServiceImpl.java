@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class MypageServiceImpl implements MypageService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired MypageDao mypageDao;
+	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	//서블릿 컨텍스트 객체
 	@Autowired ServletContext context;
@@ -40,6 +42,8 @@ public class MypageServiceImpl implements MypageService {
 	
 	@Override
 	public int changeInfo(Users users) {
+		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
+		users.setUserPw(endcodedPassword);
 		return mypageDao.updateUserInfo(users);
 	}
 	

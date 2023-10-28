@@ -36,7 +36,6 @@ public class UserController {
 	@Autowired UsersService usersService;
 	@Autowired MypageService mypageService;
 	@Autowired NaverService naverService;
-	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 	//@Autowired JwtTokenProvider jwtTokenProvider;
 
 	@RequestMapping("/main")
