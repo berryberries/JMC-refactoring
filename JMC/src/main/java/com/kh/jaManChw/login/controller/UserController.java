@@ -7,8 +7,11 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.jaManChw.dto.ProfileFile;
 import com.kh.jaManChw.dto.Users;
-import com.kh.jaManChw.login.jwt.JwtTokenProvider;
+//import com.kh.jaManChw.login.jwt.JwtTokenProvider;
 import com.kh.jaManChw.login.service.face.NaverService;
 import com.kh.jaManChw.login.service.face.UsersService;
 import com.kh.jaManChw.mypage.service.face.MypageService;
@@ -33,7 +36,8 @@ public class UserController {
 	@Autowired UsersService usersService;
 	@Autowired MypageService mypageService;
 	@Autowired NaverService naverService;
-	@Autowired JwtTokenProvider jwtTokenProvider;
+	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
+	//@Autowired JwtTokenProvider jwtTokenProvider;
 
 	@RequestMapping("/main")
 	public void mainPage() {}
@@ -46,6 +50,15 @@ public class UserController {
 		
 		session.setAttribute("apiURL", naverMap.get("apiURL")); 
 	}
+	
+//	public String loginAuth(Model model, Authentication auth) {
+//		model.addAttribute("securityLogin","securityLogin");
+//		
+//		if(auth != null) {
+//			
+//		}
+//		return null;
+//	}
 
 	// 로그인 - true or false
 	@PostMapping("/login")
@@ -78,9 +91,13 @@ public class UserController {
 		// 프로필 정보 가져오기
 		ProfileFile profile = mypageService.fileInfo(info);	
 		if(profile !=null) {session.setAttribute("profile", profile);}
-		logger.info("profile:{}",profile);		
+		logger.info("profile:{}",profile);	
 		
-		// 로그인 인증
+		
+		
+		
+		
+		// 로그인 
 		boolean isLogin = usersService.login(users);	
 		
 		if (isLogin) {		

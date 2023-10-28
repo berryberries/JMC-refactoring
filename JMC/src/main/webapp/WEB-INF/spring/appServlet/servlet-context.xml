@@ -76,10 +76,10 @@
 			<beans:bean class="com.kh.jaManChw.util.interceptor.MeetingInterceptor"/>
 		</interceptor>	
 			
-		<interceptor>
-			<mapping path="/**"/>
-			<beans:bean class="com.kh.jaManChw.util.interceptor.JwtInterceptor"/>
-		</interceptor>
+<!-- 		<interceptor> -->
+<!-- 			<mapping path="/**/login/login"/> -->
+<!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.JwtInterceptor"/> -->
+<!-- 		</interceptor> -->
 		
 	</interceptors>
 
@@ -131,5 +131,7 @@
 	
 <!--=================================================================================================================-->
 	<beans:bean id="ChatConfig" class="com.kh.jaManChw.chat.config.ChatConfig"></beans:bean>
+	<beans:bean id="SecurityConfig" class="com.kh.jaManChw.login.config.SecurityConfig"></beans:bean>
+	
 	
 </beans:beans>
