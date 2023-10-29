@@ -179,11 +179,11 @@ flex-direction:row;
 	<a href="<%=request.getContextPath()%>/admin/main">관리자페이지</a>
 </c:if>
 
-<c:if test="${not empty login}">
+<c:if test="${not empty userno}">
 	<a href="<%=request.getContextPath()%>/login/logout">로그아웃</a>
 	<a href="<%=request.getContextPath()%>/mypage/main">마이페이지</a>
 </c:if>
-<c:if test="${empty socialNum and empty login}">
+<c:if test="${empty socialNum and empty userno}">
 	<a href="<%=request.getContextPath()%>/login/login">로그인</a>
 </c:if>	
 <c:if test="${not empty socialNum}">

@@ -7,11 +7,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +23,6 @@ import com.kh.jaManChw.login.service.face.NaverService;
 import com.kh.jaManChw.login.service.face.UsersService;
 import com.kh.jaManChw.mypage.service.face.MypageService;
 
-import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/login")
@@ -63,12 +60,6 @@ public class UserController {
 	// 로그인 - true or false
 	@PostMapping("/login")
 	public String userlogin(HttpSession session, Users users,Model model) {
-		
-		//입력한 비밀번호 암호화
-		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
-		users.setUserPw(endcodedPassword);
-		
-		logger.info("암호화 비밀번호 : " + endcodedPassword);
 
 		//탈퇴 유저 로그인 방지
 		boolean leaveUser = usersService.leaveLogin(users);
@@ -97,32 +88,39 @@ public class UserController {
 		logger.info("profile:{}",profile);	
 		
 		
-		// 로그인 
-		boolean isLogin = usersService.login(users);	
+		//암호화한 비밀번호 매치
+		//Users userPw = usersService.matchUserpw(users);
 		
-		if (isLogin) {		
-			logger.info("userlogin() - 로그인 성공");	
+		
+		if(bCryptPasswordEncoder.matches(users.getUserPw(),info.getUserPw())) {
 			
-			// 세션에 파라미터 값 저장
-			session.setAttribute("login", isLogin);
-			session.setAttribute("userno", info.getUserno());
-			session.setAttribute("userId", info.getUserId());
-			session.setAttribute("role", info.getRole());
-			session.setAttribute("social",info.getSocialNum());
-			session.setAttribute("status", info.getStatus());
-			session.setAttribute("platFormOption", info.getPlatFormOption());
-
+			logger.info("평문 암호? : " + users.getUserPw());
+			logger.info("암호화 비번? : "+ info.getUserPw());
+			
+			// 로그인 
+			//boolean isLogin = usersService.login(users);	
+			
+			//if (isLogin) {		
+				logger.info("userlogin() - 로그인 성공");	
+				
+				// 세션에 파라미터 값 저장
+				//session.setAttribute("login", isLogin);
+				session.setAttribute("userno", info.getUserno());
+				session.setAttribute("userId", info.getUserId());
+				session.setAttribute("role", info.getRole());
+				session.setAttribute("social",info.getSocialNum());
+				session.setAttribute("status", info.getStatus());
+				session.setAttribute("platFormOption", info.getPlatFormOption());
+				
+		
+			//} 
 			// 메인 페이지로 리다이렉트
 			return "redirect:/login/main";
-		} else {
-			logger.info("userlogin() - 로그인 실패");
-
-			// 세션 삭제
-			//session.invalidate();		
-			return "/login/login";
-		} // if(isLogin)문 end		
-	} // userlogin() end
-
+		
+		}
+		logger.info("userlogin() - 로그인 실패");	
+		return "/login/login";	
+	}
 
 	// 회원가입 페이지 이동
 	@GetMapping("/join")

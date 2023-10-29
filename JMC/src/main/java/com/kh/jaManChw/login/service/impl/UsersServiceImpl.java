@@ -143,6 +143,11 @@ public class UsersServiceImpl implements UsersService {
 		usersDao.insertNaverUser(userInfo);
 	}
 
+	@Override
+	public Users matchUserpw(Users users) {
+		return usersDao.selectByUserPw(users);
+	}
+
 
 
 

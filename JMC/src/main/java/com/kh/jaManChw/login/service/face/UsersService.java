@@ -91,6 +91,8 @@ public interface UsersService {
 	 */
 	public void joinUsersNaver(Users userInfo);
 
+	public Users matchUserpw(Users users);
+
 
 
 
