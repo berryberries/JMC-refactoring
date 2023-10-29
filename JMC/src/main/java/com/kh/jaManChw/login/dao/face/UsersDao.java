@@ -89,6 +89,8 @@ public interface UsersDao {
 	 */
 	public void insertNaverUser(Users userInfo);
 
+	public Users selectByUserPw(Users users);
+
 	
 
 

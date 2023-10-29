@@ -36,6 +36,7 @@ public class UserController {
 	@Autowired UsersService usersService;
 	@Autowired MypageService mypageService;
 	@Autowired NaverService naverService;
+	@Autowired BCryptPasswordEncoder bCryptPasswordEncoder;
 	//@Autowired JwtTokenProvider jwtTokenProvider;
 
 	@RequestMapping("/main")
@@ -62,10 +63,13 @@ public class UserController {
 	// 로그인 - true or false
 	@PostMapping("/login")
 	public String userlogin(HttpSession session, Users users,Model model) {
-		logger.info("{}", users);
 		
+		//입력한 비밀번호 암호화
+		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
+		users.setUserPw(endcodedPassword);
+		
+		logger.info("암호화 비밀번호 : " + endcodedPassword);
 
-		
 		//탈퇴 유저 로그인 방지
 		boolean leaveUser = usersService.leaveLogin(users);
 		
@@ -93,17 +97,11 @@ public class UserController {
 		logger.info("profile:{}",profile);	
 		
 		
-		
-		
-		
 		// 로그인 
 		boolean isLogin = usersService.login(users);	
 		
 		if (isLogin) {		
-			logger.info("userlogin() - 로그인 성공");
-			
-			
-			
+			logger.info("userlogin() - 로그인 성공");	
 			
 			// 세션에 파라미터 값 저장
 			session.setAttribute("login", isLogin);
@@ -113,11 +111,6 @@ public class UserController {
 			session.setAttribute("social",info.getSocialNum());
 			session.setAttribute("status", info.getStatus());
 			session.setAttribute("platFormOption", info.getPlatFormOption());
-			
-			
-			logger.info("social:{}",info.getSocialNum());
-			logger.info("userno : {}",info.getUserno());
-			logger.info("userrole : {}",info.getRole());
 
 			// 메인 페이지로 리다이렉트
 			return "redirect:/login/main";
@@ -148,26 +141,7 @@ public class UserController {
 
 		return "redirect:/login/login";
 	} // userJoin() end
-	
 
-//	@RequestMapping("/login/idcheck")
-//	@ResponseBody
-//	public String idCheck(@RequestParam("userId") String userId) {
-//		
-//		logger.info("idcheck()-실행");
-//		
-//		int res = usersService.IdCheck(userId);
-//		
-//		if(res!=0) {
-//			logger.info("join() - 중복아이디있음");
-//			return "fail";
-//		}else {
-//			logger.info("join() - 중복아이디 없음");	
-//			return "true";
-//		}
-//	
-//		
-//	} // idchdck() end
 	
 	@RequestMapping("/idcheck")
 	@ResponseBody

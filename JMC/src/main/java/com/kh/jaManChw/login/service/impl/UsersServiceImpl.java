@@ -29,6 +29,17 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public boolean login(Users users) {
 		
+//		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
+//		
+//		logger.info("암호화 비밀번호 : " + endcodedPassword);
+//		
+//		Users hashPw = usersDao.selectByUserPw(users);
+//		
+//		logger.info("db암호화 비밀번호 : " + hashPw);
+//		
+//		boolean password = bCryptPasswordEncoder.matches(users.getUserPw(),hashPw.getUserPw());
+//		logger.info("db와 입력 비밀번호 일치 불일치 : " + password);
+		
 		// 파라미터 값을 가져와 dao에서 일치하는 행을 확인해야함.
 		// 매개변수 다시 확인해보기
 		int res = usersDao.selectCntByUserIdPw(users);
@@ -99,7 +110,6 @@ public class UsersServiceImpl implements UsersService {
 			logger.info("당신은 블랙리스트! 로그인 불가");
 			return true;
 		}else {
-			logger.info("관리자에게 문의바람");
 			return false;
 		}
 		
@@ -115,7 +125,6 @@ public class UsersServiceImpl implements UsersService {
 			logger.info("당신은 탈퇴유저");
 			return true;
 		}else {
-			logger.info("관리자에게 문의바람");
 			return false;
 		}
 		
