@@ -49,39 +49,39 @@
 <!--=============================================인터셉터 설정=========================================================-->
 
 	<!-- 로그인기능과 메인이 붙어야만 완성되는 인터셉터 -->
-	<interceptors>
-		<interceptor>
-			<!-- 관리자 관련 모든 메서드에 대한 인터셉터를 지정한다 -->
-			<mapping path="/**/admin/**"/>
-			<beans:bean class="com.kh.jaManChw.util.interceptor.AdminInterceptor"/>
-		</interceptor>	
-		<interceptor>
-			<!-- 마이페이지 관련 모든 메서드에 대한 인터셉터를 지정한다 -->
-			<mapping path="/**/mypage/**"/>
-			<beans:bean class="com.kh.jaManChw.util.interceptor.MypageInterceptor"/>
-		</interceptor>	
-		<interceptor>
-			<!-- 게시판 관련 메서드에 대한 인터셉터를 지정한다 -->
-			<mapping path="/**/board/commentWrite"/>
-			<mapping path="/**/board/reviseComment"/>
-			<mapping path="/**/board/deleteComment"/>
-			<mapping path="/**/board/write"/>
-			<mapping path="/**/board/boardReco"/>
-			<beans:bean class="com.kh.jaManChw.util.interceptor.BoardInterceptor"/>
-		</interceptor>	
+<!-- 	<interceptors> -->
+<!-- 		<interceptor> -->
+			<!-- 관리자 관련 모든 메서드에 대한 인터셉터를 지정한다 --> 
+<!-- 			<mapping path="/**/admin/**"/> -->
+<!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.AdminInterceptor"/> -->
+<!-- 		</interceptor>	 -->
+<!-- 		<interceptor> -->
+ 			<!-- 마이페이지 관련 모든 메서드에 대한 인터셉터를 지정한다 --> 
+<!-- 			<mapping path="/**/mypage/**"/> -->
+<!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.MypageInterceptor"/> -->
+<!-- 		</interceptor>	 -->
+<!-- 		<interceptor> -->
+			<!-- 게시판 관련 메서드에 대한 인터셉터를 지정한다 --> 
+<!-- 			<mapping path="/**/board/commentWrite"/> -->
+<!-- 			<mapping path="/**/board/reviseComment"/> -->
+<!-- 			<mapping path="/**/board/deleteComment"/> -->
+<!-- 			<mapping path="/**/board/write"/> -->
+<!-- 			<mapping path="/**/board/boardReco"/> -->
+<!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.BoardInterceptor"/> -->
+<!-- 		</interceptor>	 -->
 
-		<interceptor>
-			<!-- 모임 관련 메서드에 대한 인터셉터를 지정한다 -->
-			<mapping path="/**/meeting/**"/>
-			<beans:bean class="com.kh.jaManChw.util.interceptor.MeetingInterceptor"/>
-		</interceptor>	
+<!-- 		<interceptor> -->
+			<!-- 모임 관련 메서드에 대한 인터셉터를 지정한다 --> 
+<!-- 			<mapping path="/**/meeting/**"/> -->
+<!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.MeetingInterceptor"/> -->
+<!-- 		</interceptor>	 -->
 			
 <!-- 		<interceptor> -->
 <!-- 			<mapping path="/**/login/login"/> -->
 <!-- 			<beans:bean class="com.kh.jaManChw.util.interceptor.JwtInterceptor"/> -->
 <!-- 		</interceptor> -->
 		
-	</interceptors>
+<!-- 	</interceptors> -->
 
 <!--=================================================================================================================-->
 
@@ -131,7 +131,7 @@
 	
 <!--=================================================================================================================-->
 	<beans:bean id="ChatConfig" class="com.kh.jaManChw.chat.config.ChatConfig"></beans:bean>
-	<beans:bean id="SecurityConfig" class="com.kh.jaManChw.login.config.SecurityConfig"></beans:bean>
+<!-- 	<beans:bean id="SecurityConfig" class="com.kh.jaManChw.login.config.SecurityConfig"></beans:bean> -->
 	
 	
 </beans:beans>

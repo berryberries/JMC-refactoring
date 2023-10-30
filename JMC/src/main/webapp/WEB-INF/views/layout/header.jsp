@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -179,13 +180,20 @@ flex-direction:row;
 	<a href="<%=request.getContextPath()%>/admin/main">관리자페이지</a>
 </c:if>
 
+
 <c:if test="${not empty userno}">
-	<a href="<%=request.getContextPath()%>/login/logout">로그아웃</a>
-	<a href="<%=request.getContextPath()%>/mypage/main">마이페이지</a>
+		<a href="<%=request.getContextPath()%>/login/logout">로그아웃</a>
+		<a href="<%=request.getContextPath()%>/mypage/main">마이페이지</a>
 </c:if>
+
+<form id="logout" action="/login/logout" method="POST">
+   <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+</form>
+
 <c:if test="${empty socialNum and empty userno}">
 	<a href="<%=request.getContextPath()%>/login/login">로그인</a>
 </c:if>	
+
 <c:if test="${not empty socialNum}">
 	<a href="<%=request.getContextPath()%>/login/logout">로그아웃</a>
 	<a href="<%=request.getContextPath()%>/mypage/main">마이페이지</a>
