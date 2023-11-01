@@ -88,7 +88,8 @@ public class UserController {
 			return "redirect:/login/login";
 		}
 
-		//유저 정보 가져오기
+		
+		//유저 정보 가져오기 - 왜 이걸.. 여기다 가져다 놨지....?
 		Users info = usersService.getuserInfo(users);
 		logger.info("info:{}",info);
 		model.addAttribute("info",info);
@@ -98,18 +99,18 @@ public class UserController {
 		if(profile !=null) {session.setAttribute("profile", profile);}
 		logger.info("profile:{}",profile);	
 		
-		
 		//암호화한 비밀번호 매치
 		if(bCryptPasswordEncoder.matches(users.getUserPw(),info.getUserPw())) {
 			
 			logger.info("평문 암호? : " + users.getUserPw());
-			logger.info("암호화 비번? : "+ info.getUserPw());
+			logger.info("암호화 비번? : " + info.getUserPw());
 			
 			// 로그인 
-			//boolean isLogin = usersService.login(users);	
+			boolean isLogin = usersService.login(users);	
 			
-			//if (isLogin) {		
+			if (isLogin) {		
 				logger.info("userlogin() - 로그인 성공");	
+				
 				
 				// 세션에 파라미터 값 저장
 				//session.setAttribute("login", isLogin);
@@ -121,7 +122,7 @@ public class UserController {
 				session.setAttribute("platFormOption", info.getPlatFormOption());
 				
 		
-			//} 
+			} 
 			// 메인 페이지로 리다이렉트
 			return "redirect:/login/main";
 		
@@ -180,7 +181,7 @@ public class UserController {
 		}else {
 			logger.info("조회된 이름 있음");
 			model.addAttribute("result", result);
-			model.addAttribute("userName",result.getUserName() );
+			model.addAttribute("userName",result.getUserNick() );
 			model.addAttribute("userId",result.getUserId() );
 			session.setAttribute("userno", result.getUserno());
 		}

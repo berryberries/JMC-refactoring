@@ -66,6 +66,7 @@ public class KakaoController {
 	// 리턴은 메인페이지로
 	 @RequestMapping("/login/logout")
 	    public String logout(HttpSession session) {
+		
 	    	kakaoService.kakaoLogout((String)session.getAttribute("access_Token"));
 	        session.removeAttribute("access_Token");
 	        session.removeAttribute("userId");

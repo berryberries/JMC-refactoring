@@ -91,6 +91,15 @@ public interface UsersDao {
 
 	public Users selectByUserPw(Users users);
 
+	/**
+	 * 아이디로 유저 정보 조회
+	 * @param userId
+	 * @return
+	 */
+	public Users selectUserByUserId(String userId);
+	
+	
+
 	
 
 

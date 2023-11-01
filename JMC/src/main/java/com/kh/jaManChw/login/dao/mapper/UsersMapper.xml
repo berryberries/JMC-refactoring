@@ -16,7 +16,7 @@
 	  <select id="selectCntByUserIdPw" resultType="int" parameterType="com.kh.jaManChw.dto.Users">
 	  	SELECT count(*)
 	  	FROM USERS
-	  	WHERE upper(USER_ID) = upper(#{userId}) AND USER_PW=#{userPw}
+	  	WHERE upper(USER_ID) = upper(#{userId})
 	  </select>
 	  
 	  <select id="selectuserByUserId" resultType="com.kh.jaManChw.dto.Users" parameterType="string">
@@ -28,7 +28,7 @@
 	  <select id="selectroleByuseridpw" resultType="String" parameterType="com.kh.jaManChw.dto.Users">
 	  	SELECT ROLE
 	  	FROM USERS
-	  	WHERE upper(USER_ID)=upper(#{userId}) AND USER_PW=#{userPw}
+	  	WHERE upper(USER_ID)=upper(#{userId})
 	  </select>
 	  
 	  <select id="selectCntByUserId" resultType="int" parameterType="com.kh.jaManChw.dto.Users">
@@ -109,6 +109,12 @@
   	  		#{platFormOption}
   	  	)
   	  </insert>
+  	  
+  	  <select id="selectUserByUserId" resultType="com.kh.jaManChw.dto.Users">
+  	  SELECT *
+  	  FROM users
+  	  WHERE USER_ID = ${userId}
+  	  </select>
 
   
   </mapper>

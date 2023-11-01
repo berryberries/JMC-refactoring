@@ -93,6 +93,8 @@ public interface UsersService {
 
 	public Users matchUserpw(Users users);
 
+	//public Users getUsersById(String userId);
+
 
 
 

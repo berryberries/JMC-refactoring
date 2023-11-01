@@ -29,16 +29,8 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public boolean login(Users users) {
 		
-//		String endcodedPassword = bCryptPasswordEncoder.encode(users.getUserPw());
-//		
-//		logger.info("암호화 비밀번호 : " + endcodedPassword);
-//		
-//		Users hashPw = usersDao.selectByUserPw(users);
-//		
-//		logger.info("db암호화 비밀번호 : " + hashPw);
-//		
-//		boolean password = bCryptPasswordEncoder.matches(users.getUserPw(),hashPw.getUserPw());
-//		logger.info("db와 입력 비밀번호 일치 불일치 : " + password);
+		
+		
 		
 		// 파라미터 값을 가져와 dao에서 일치하는 행을 확인해야함.
 		// 매개변수 다시 확인해보기
@@ -147,6 +139,11 @@ public class UsersServiceImpl implements UsersService {
 	public Users matchUserpw(Users users) {
 		return usersDao.selectByUserPw(users);
 	}
+
+//	@Override
+//	public Users getUsersById(String username) {
+//		return usersDao.selectByUserId(user);
+//	}
 
 
 
